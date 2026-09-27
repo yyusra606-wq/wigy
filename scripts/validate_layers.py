@@ -34,6 +34,20 @@ def main():
         assert (folder / f"{name}.png").read_bytes() == asset.read_bytes(), f"{name}: source and bundled copy differ"
         print(f"PASS {name}: RGBA, aligned canvas, clear border, {coverage:.1%} artwork; SHA256 {hashlib.sha256(asset.read_bytes()).hexdigest()}")
 
+    for name in NAMES:
+        folder = ROOT / f"Shared/LayerAssets.xcassets/accessory_{name}.imageset"
+        metadata = json.loads((folder / "Contents.json").read_text())
+        assert metadata["properties"]["template-rendering-intent"] == "template"
+        with Image.open(folder / metadata["images"][0]["filename"]) as image:
+            assert image.mode == "RGBA" and image.size == (256, 256)
+            assert image.getchannel("A").getextrema() == (0, 255)
+            with Image.open(ROOT / f"Assets/Layers/{name}.png") as source:
+                crop = source.crop((170, 92, 590, 472)).resize((256, 232), Image.Resampling.LANCZOS)
+            expected = Image.new("RGBA", (256, 256))
+            expected.alpha_composite(crop, (0, 12))
+            assert image.tobytes() == expected.tobytes(), f"{name}: accessory registration mismatch"
+    print("PASS four small accessory layers: transparency, catalog wiring, and crop registration")
+
     project = yaml.safe_load((ROOT / "project.yml").read_text())
     assert project["options"]["deploymentTarget"]["iOS"] == "17.0"
     targets = project["targets"]

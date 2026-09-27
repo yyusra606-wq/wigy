@@ -34,39 +34,74 @@ private struct LayerWidgetView: View {
         family == .accessoryCircular || family == .accessoryRectangular || family == .accessoryInline
     }
 
+    private var wind: Double {
+        guard canAnimate else { return 0 }
+        return [-1.0, 0, 1][entry.revision % 3]
+    }
+
     var body: some View {
         Group {
             if family == .accessoryInline {
                 Label("Wigy · Rain", systemImage: "cloud.rain")
-            } else if family == .accessoryCircular {
+            } else {
                 Button(intent: MoveLayersIntent()) {
-                    scene(framing: .portrait)
-                        .clipShape(Circle())
+                    ZStack(alignment: .bottomTrailing) {
+                        if isAccessory {
+                            AccessoryLayerScene(wind: wind)
+                                .padding(3)
+                        } else {
+                            LayerScene(wind: wind * 5,
+                                       rainRevision: canAnimate ? entry.revision : 0)
+                                .foregroundStyle(.white)
+                            Label("Tap for wind", systemImage: "wind")
+                                .font(.caption2.weight(.semibold))
+                                .padding(8)
+                                .foregroundStyle(.white)
+                                .background(.black.opacity(0.65), in: Capsule())
+                                .padding(8)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Move the hair, cloak, and rain")
-            } else {
-                ZStack(alignment: .bottomTrailing) {
-                    scene(framing: family == .accessoryRectangular ? .portrait : .fullBody)
-                    Button(intent: MoveLayersIntent()) {
-                        Image(systemName: "wind")
-                            .font(.system(size: isAccessory ? 12 : 16, weight: .semibold))
-                            .padding(isAccessory ? 5 : 10)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Move the hair, cloak, and rain")
-                }
+                .animation(canAnimate ? .easeInOut(duration: 2) : nil, value: entry.revision)
             }
         }
-        .containerBackground(for: .widget) { Color.clear }
+        .containerBackground(for: .widget) {
+            // No clear rectangle in the accessory's vibrant rendering tree.
+            if !isAccessory { Color(red: 0.075, green: 0.085, blue: 0.11) }
+        }
+    }
+}
+
+/// Small pre-cropped transparent layers avoid oversized off-screen surfaces
+/// in the Lock Screen renderer. All four images retain the same registration.
+private struct AccessoryLayerScene: View {
+    let wind: Double
+
+    var body: some View {
+        ZStack {
+            layer(.character)
+            layer(.cloak)
+                .rotationEffect(.degrees(wind * 3), anchor: .top)
+            layer(.hair)
+                .offset(x: wind * 2)
+            layer(.rain)
+                .offset(y: wind * 5)
+                .opacity(0.2)
+        }
+        .aspectRatio(1, contentMode: .fit)
+        .foregroundStyle(.primary)
+        .accessibilityHidden(true)
     }
 
-    private func scene(framing: SceneFraming) -> some View {
-        LayerScene(wind: canAnimate && !entry.revision.isMultiple(of: 2) ? 1 : 0,
-                   rainRevision: canAnimate ? entry.revision : 0,
-                   framing: framing)
-            .foregroundStyle(.primary)
-            .animation(canAnimate ? .easeInOut(duration: 2) : nil, value: entry.revision)
+    private func layer(_ layer: SceneLayer) -> some View {
+        Image("accessory_" + layer.rawValue)
+            .renderingMode(.template)
+            .resizable()
+            .scaledToFit()
     }
 }
 

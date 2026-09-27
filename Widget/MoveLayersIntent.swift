@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import WidgetKit
 
 /// This file belongs ONLY to the widget extension. Keeping the intent there
 /// makes its defaults and the timeline provider use the same sandbox, without
@@ -22,6 +23,7 @@ struct MoveLayersIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         WidgetPoseStore.advance()
+        WidgetCenter.shared.reloadTimelines(ofKind: "WigyLayers")
         return .result()
     }
 }

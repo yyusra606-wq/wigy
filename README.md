@@ -13,12 +13,12 @@ monochrome readability before adding any more effects.
 - `Shared/LayerScene.swift`: one shared compositor with independent layer transforms.
 - `App/`: a layer inspector, visibility switches, monochrome preview, and a
   two-second motion that can repeat inside the foreground app.
-- `Widget/`: Home Screen and Lock Screen widgets with a wind button to request a
+- `Widget/`: Home Screen and Lock Screen widgets with a tappable scene to request a
   short native content-update animation. Inline widgets show an icon/title.
 - `project.yml` and `Config/`: reproducible Xcode app and embedded widget targets.
 - `scripts/build_ipa.sh`: macOS build script that produces **`wigy.ipa`**.
-  The optional GitHub Actions workflow is supplied separately as `build-ipa.txt`
-  in the task Outputs; it is not committed to the repository.
+  `.github/workflows/build-ipa.yml` runs it on GitHub Actions. A copy is also
+  available as `build-ipa.txt` in the task Outputs.
 - `docs/asset-prompt.md`: the reconstruction prompt and future effect-layer plan.
 
 The test PNGs were **extracted from the supplied reference sheet using masks**.
@@ -31,14 +31,20 @@ pipeline test, not final production art. The image-generation tool was unavailab
 The old GIFs and frame catalog remain in `Reference/` as history. They are not in
 any build target. The reference sheet is also excluded from the app.
 
+## Widget behavior
+
+Version 0.1.1 makes the entire scene tappable and uses four smaller, pre-cropped
+transparent layers on the Lock Screen. The app preview can loop; widgets request
+a two-second pose transition only when tapped. Continuous widget playback is not
+supported. Lock Screen appearance and tap animations still need a device check.
+
 ## First test
 
 1. In the app, hide each of the four layers. Check that the remaining layers stay
    registered and that there is no rectangular matte.
 2. Play the two-second motion. Check the scalp and cloak attachment for gaps.
 3. Toggle monochrome preview and inspect the face/torso at a small size.
-4. Add **Wigy Layers** from the widget gallery. Tap the wind button (or tap the
-   circular widget) and check the hair, cloak, and rain transition.
+4. Add **Wigy Layers** from the widget gallery. Tap the scene and check the hair, cloak, and rain transition.
 5. Repeat with Reduce Motion and Always On. A still, legible composition is the
    expected fallback. The app's layer switches are inspection controls and do not
    configure the widget.
@@ -80,9 +86,8 @@ Do not add Apple credentials or signing certificates to this repository or workf
 
 ## Get `wigy.ipa` using GitHub Actions
 
-1. Copy the separately supplied `build-ipa.txt` into your repository as
-   `.github/workflows/build-ipa.yml` and commit it with an account that can edit
-   GitHub Actions workflows.
+1. The workflow is already installed at `.github/workflows/build-ipa.yml`.
+   If copying this project to another repository, include that file.
 2. Open **Actions → Build SideStore IPA → Run workflow**. Manual dispatch becomes
    available once the workflow is on the default branch. Pushes to `main` and the
    assigned task branch also start it.
@@ -121,6 +126,7 @@ scheme. SideStore handles signing the packaged app separately.
 ```bash
 python3 scripts/extract_layers.py
 python3 scripts/make_icon.py
+python3 scripts/make_accessory_layers.py
 python3 scripts/validate_layers.py
 python3 scripts/preview_layers.py --output build/previews
 ```

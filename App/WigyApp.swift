@@ -21,9 +21,9 @@ private struct LayerLabView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Four layers. One scene.")
+                    Text("App motion preview")
                         .font(.title2.bold())
-                    Text("Hide a layer to inspect the cutout. Play a two-second motion to check the seams.")
+                    Text("This preview animates inside Wigy. Home Screen and Lock Screen widgets stay still until you tap them for a short pose change; they cannot play a continuous loop.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
@@ -95,7 +95,7 @@ private struct LayerLabView: View {
                             }
                         }
                     }
-                    Text("Add Wigy from the widget gallery, then tap the wind button for a short update. These preview switches affect the app only. iOS controls widget animation and may suppress it in Always On or Reduce Motion.")
+                    Text("Add Wigy from the widget gallery, then tap the scene for a short update. These preview switches affect the app only. iOS controls widget animation and may suppress it in Always On or Reduce Motion.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     if reduceMotion {
