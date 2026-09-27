@@ -120,5 +120,8 @@ private struct WigyLayerWidget: Widget {
 
 @main
 struct WigyWidgetBundle: WidgetBundle {
-    var body: some Widget { WigyLayerWidget() }
+    var body: some Widget {
+        WigyLayerWidget()
+        WigyTimerSceneWidget()
+    }
 }

@@ -31,6 +31,26 @@ pipeline test, not final production art. The image-generation tool was unavailab
 The old GIFs and frame catalog remain in `Reference/` as history. They are not in
 any build target. The reference sheet is also excluded from the app.
 
+## Scheduled timer glyph experiment
+
+**Wigy Timer Test** is a second widget in version 0.2.0. It schedules entries
+for each local hour at :00 and :30. Each entry includes a six-second countdown
+that pauses at zero. A custom vector font maps countdown digits 6/5 to scene 1,
+4/3 to scene 2, and 2/1 to scene 3; zero and the timer punctuation are blank.
+The normal transparent scene remains faintly visible underneath. The original
+**Wigy Layers** tap widget is still available.
+
+This is an experimental timer-rendering route, not a proven WidgetKit playback
+feature. iOS may delay a scheduled entry, suppress timer redraws, replace the
+custom font, or alter the timer format. Test it on the phone at :00 or :30 and
+record the screen for six seconds. The three poses come from the same transparent
+layer cutouts; their motion is still coarse compared with the reference GIF.
+
+Rebuild the font after changing layer cutouts with
+`python3 scripts/make_timer_font.py`. It uses fonttools from
+`scripts/requirements.txt`. The generated TTF is bundled only in the widget
+extension.
+
 ## Widget behavior
 
 Version 0.1.1 makes the entire scene tappable and uses four smaller, pre-cropped

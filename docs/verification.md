@@ -47,3 +47,12 @@ extension retained, remove old widgets, and add them again. Check that the artwo
 is visible and that tapping changes poses with the phone awake. Repeat for Home
 Screen, rectangular/circular Lock Screen, Reduce Motion, and Always On. Continuous
 playback without updates is not supported by this implementation or claimed.
+
+## Timer glyph test — 2026-09-27
+
+Version 0.2.0 adds a separate **Wigy Timer Test** widget, scheduled at :00 and
+:30 each hour, with a six-second paused timer whose custom font contains three
+scene phases. The font is generated from the four transparent layer cutouts.
+Font glyph shape and native compilation can be validated here; automatic visual
+changes in an installed widget require a phone test. Apple may delay timeline
+entries. The original tap widget remains for comparison.

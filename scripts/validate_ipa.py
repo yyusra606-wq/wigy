@@ -18,6 +18,10 @@ def validate(path):
             raise ValueError("Main bundle is not an iOS app")
         if not widget["CFBundleIdentifier"].startswith(app["CFBundleIdentifier"] + "."):
             raise ValueError("Widget bundle ID must be nested under the app ID")
+        if widget.get("UIAppFonts") != ["WigySceneFrames.ttf"]:
+            raise ValueError("Timer scene font is not registered in the widget")
+        if not archive.read(widget_root + "WigySceneFrames.ttf"):
+            raise ValueError("Timer scene font is missing from the widget")
         if widget["NSExtension"]["NSExtensionPointIdentifier"] != "com.apple.widgetkit-extension":
             raise ValueError("Missing WidgetKit extension declaration")
         for prefix, info in ((root, app), (widget_root, widget)):

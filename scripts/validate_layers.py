@@ -6,6 +6,7 @@ import json
 import plistlib
 import yaml
 from PIL import Image
+from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 NAMES = ("character_base", "cloak", "hair", "rain")
@@ -48,6 +49,16 @@ def main():
             assert image.tobytes() == expected.tobytes(), f"{name}: accessory registration mismatch"
     print("PASS four small accessory layers: transparency, catalog wiring, and crop registration")
 
+    font_path = ROOT / "Widget/Resources/WigySceneFrames.ttf"
+    with TTFont(font_path) as font:
+        assert font["name"].getDebugName(6) == "WigySceneFrames-Regular"
+        cmap = font.getBestCmap()
+        assert all(ord(str(n)) in cmap for n in range(10))
+        assert font["glyf"][cmap[ord("0")]].numberOfContours == 0
+        assert font["hmtx"][cmap[ord("0")]][0] == 0
+        assert all(font["glyf"][cmap[ord(str(n))]].numberOfContours > 0 for n in range(1, 7))
+    print("PASS clock scene font: six visible digit glyphs and blank zero")
+
     project = yaml.safe_load((ROOT / "project.yml").read_text())
     assert project["options"]["deploymentTarget"]["iOS"] == "17.0"
     targets = project["targets"]
@@ -62,6 +73,7 @@ def main():
         assert info["CFBundleIdentifier"] == "$(PRODUCT_BUNDLE_IDENTIFIER)"
         if name == "WigyWidgets":
             assert info["NSExtension"]["NSExtensionPointIdentifier"] == "com.apple.widgetkit-extension"
+            assert info["UIAppFonts"] == ["WigySceneFrames.ttf"]
         else:
             assert info["CFBundlePackageType"] == "APPL"
     app_id = targets["Wigy"]["settings"]["base"]["PRODUCT_BUNDLE_IDENTIFIER"]
