@@ -1,0 +1,63 @@
+name: Build SideStore IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, coderabbit/build-anime-loop-widgets/0ab1500f]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wigy-ipa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install verified XcodeGen 2.44.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          curl --fail --location --retry 3 \
+            https://github.com/yonaskolb/XcodeGen/releases/download/2.44.1/xcodegen.zip \
+            -o xcodegen.zip
+          echo 'a2e905fb68446e9bb4008cdfe2e13e3f176d0cbcca828b71770f8e53fca91b73  xcodegen.zip' | shasum -a 256 -c -
+          unzip -q xcodegen.zip
+          mkdir -p "$RUNNER_TEMP/wigy-tools"
+          bash xcodegen/install.sh "$RUNNER_TEMP/wigy-tools"
+          echo "$RUNNER_TEMP/wigy-tools/bin" >> "$GITHUB_PATH"
+      - name: Validate transparent layers and project inputs
+        run: |
+          python3 -m pip install -r scripts/requirements.txt
+          python3 scripts/validate_layers.py
+      - name: Build unsigned device IPA
+        run: |
+          xcodebuild -version
+          xcodegen --version
+          bash scripts/build_ipa.sh
+      - name: Upload wigy.ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: wigy-ipa
+          path: build/wigy.ipa
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wigy-build-log
+          path: build/xcodebuild.log
+          if-no-files-found: ignore
+          retention-days: 7
