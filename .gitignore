@@ -1,0 +1,8 @@
+build/
+Wigy.xcodeproj/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+.venv/
+__pycache__/
+*.pyc

@@ -1,0 +1,44 @@
+{
+  "canvas": [
+    1024,
+    1024
+  ],
+  "origin": "top-left",
+  "zOrder": [
+    "character_base",
+    "cloak",
+    "hair",
+    "rain"
+  ],
+  "provenance": "Extracted from the user-provided sheet using semantic masks; not newly AI-generated.",
+  "source": "Reference/layer-sheet.png",
+  "figureSourceRect": [
+    0,
+    60,
+    300,
+    600
+  ],
+  "figureScale": 1.6,
+  "figureOffset": [
+    80,
+    80
+  ],
+  "cloakSourceRect": [
+    900,
+    175,
+    1230,
+    565
+  ],
+  "cloakSize": [
+    528,
+    624
+  ],
+  "cloakOffset": [
+    343,
+    256
+  ],
+  "limitations": [
+    "Occluded anatomy has not been generatively reconstructed.",
+    "Inspect the cloak seams during motion before replacing these prototype cutouts with final artwork."
+  ]
+}
