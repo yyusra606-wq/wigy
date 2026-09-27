@@ -33,9 +33,8 @@ any build target. The reference sheet is also excluded from the app.
 
 ## Scheduled timer glyph experiment
 
-**Wigy Timer Test** is a second widget in version 0.2.0. It schedules entries
-for each local hour at :00 and :30. Each entry includes a six-second countdown
-that pauses at zero. A custom vector font maps countdown digits 6/5 to scene 1,
+**Wigy Timer Test** is a second widget, now at version 0.2.1. It schedules entries
+for each local hour at :00 and :30. Each entry includes a bounded six-second countdown. A custom vector font maps countdown digits 6/5 to scene 1,
 4/3 to scene 2, and 2/1 to scene 3; zero and the timer punctuation are blank.
 The normal transparent scene remains faintly visible underneath. The original
 **Wigy Layers** tap widget is still available.
@@ -43,7 +42,13 @@ The normal transparent scene remains faintly visible underneath. The original
 This is an experimental timer-rendering route, not a proven WidgetKit playback
 feature. iOS may delay a scheduled entry, suppress timer redraws, replace the
 custom font, or alter the timer format. Test it on the phone at :00 or :30 and
-record the screen for six seconds. The three poses come from the same transparent
+record the screen for six seconds. For an immediate check, tap **Test now**
+on the Home Screen widget and watch for eight seconds (a two-second lead-in plus
+six seconds of countdown). The ordinary number countdown should decrease. The
+small static font sample should look like the character, not the numeral 6.
+If the numbers count but the main artwork stays still, the font/timer rendering
+path still needs investigation. The app identifies this test separately from
+the original **Wigy Layers** widget. The three poses come from the same transparent
 layer cutouts; their motion is still coarse compared with the reference GIF.
 
 Rebuild the font after changing layer cutouts with

@@ -56,3 +56,14 @@ scene phases. The font is generated from the four transparent layer cutouts.
 Font glyph shape and native compilation can be validated here; automatic visual
 changes in an installed widget require a phone test. Apple may delay timeline
 entries. The original tap widget remains for comparison.
+
+## No visible change reported — version 0.2.1
+
+The user reported no visible difference with 0.2.0. This does not establish
+which step failed: widget selection, schedule delivery, timer update, or font
+rendering. Version 0.2.1 adds an immediate AppIntent test with a visible standard
+countdown and a static custom-font sample on the Home Screen. It removes the
+explicit pause date and fixed intrinsic timer width, and sets white foreground
+color for the dark Home Screen container. A fresh test starts two seconds after
+the provider receives the request. The small Lock Screen widget can also be
+tapped to start the test. The timing/font behavior still needs a phone recording.

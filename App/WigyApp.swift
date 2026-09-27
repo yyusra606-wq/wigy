@@ -76,6 +76,10 @@ private struct LayerLabView: View {
                         .buttonStyle(.bordered)
                     }
 
+                    GroupBox("Widget timer test · 0.2.1") {
+                        Text("Add Wigy Timer Test to your Home Screen. Tap Test now and watch for eight seconds. The number countdown and the small artwork sample help check whether the timer and custom font work. Wigy Layers is the older tap-to-change widget.")
+                            .font(.footnote)
+                    }
                     GroupBox("Preview") {
                         VStack(spacing: 12) {
                             Toggle("Loop in app", isOn: $loops)
